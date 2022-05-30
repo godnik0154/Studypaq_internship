@@ -2,8 +2,15 @@ import Head from 'next/head'
 import Image from 'next/image'
 import React from 'react'
 import styles from '../styles/Home.module.css'
+import { useRouter } from 'next/router'
 
-export default function Home({images}) {
+
+function Home({props}) {
+
+  const {
+    images
+  } = props;
+
 
   React.useEffect(function mount() {
     function onLoad() {
@@ -60,9 +67,9 @@ export default function Home({images}) {
   )
 }
 
+Home.getInitialProps = async ({query}) => {
 
-export async function getStaticProps() {
-  const res = await fetch('https://www.reddit.com/r/images/top.json?limit=100&t=month')
+  const res = await fetch(`https://www.reddit.com/r/images/top.json?limit=${query.request}&t=month`);
   const posts = await res.json();
 
   let images = [];
@@ -77,10 +84,11 @@ export async function getStaticProps() {
     }
   })
 
-
   return {
     props: {
-      images,
+      images
     },
   }
 }
+
+export default Home;
